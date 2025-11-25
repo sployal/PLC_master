@@ -1,20 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "PLC Master - Industrial Automation Control",
-  description: "Advanced PLC control and monitoring system for industrial automation",
+  title: "PLC Master - Learn TIA Portal & Siemens Programming",
+  description: "Transform your engineering career with comprehensive PLC programming tutorials, hands-on projects, and real-world applications. Master Siemens TIA Portal from industry experts.",
 };
 
 export default function RootLayout({
@@ -24,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
         {children}
       </body>
     </html>
