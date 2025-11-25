@@ -48,7 +48,7 @@ export default function LoginPage() {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       showToast('Already logged in! Redirecting...', 'success');
-      setTimeout(() => router.push('/'), 1500);
+      setTimeout(() => router.push('/community'), 1500);
     }
   };
 
@@ -87,7 +87,7 @@ export default function LoginPage() {
       if (error) throw error;
 
       showToast('Login successful! Redirecting...', 'success');
-      setTimeout(() => router.push('/'), 1500);
+      setTimeout(() => router.push('/community'), 1500);
     } catch (error: any) {
       showToast(error.message || 'Login failed. Please try again.', 'error');
     } finally {
@@ -145,7 +145,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/`
+          redirectTo: `${window.location.origin}/community`
         }
       });
 
