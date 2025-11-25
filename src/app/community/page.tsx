@@ -248,12 +248,12 @@ export default function CommunityPage() {
   return (
     <div className="min-h-screen bg-[#0E1217] text-white">
       {/* Top Navbar */}
-      <nav className="fixed top-0 left-0 right-0 h-[60px] bg-[#1C1F26] border-b border-[#2D3138] flex justify-between items-center px-8 z-50">
-        <div className="flex items-center gap-8 flex-1">
-          <div className="text-xl font-bold bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] bg-clip-text text-transparent whitespace-nowrap">
+      <nav className="fixed top-0 left-0 right-0 h-[60px] bg-[#1C1F26] border-b border-[#2D3138] flex justify-between items-center px-4 md:px-8 z-50">
+        <div className="flex items-center gap-4 md:gap-8 flex-1">
+          <div className="text-lg md:text-xl font-bold bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] bg-clip-text text-transparent whitespace-nowrap">
             ⚡ PLC Master
           </div>
-          <div className="flex-1 max-w-md">
+          <div className="flex-1 max-w-md hidden md:block">
             <input
               type="text"
               placeholder="🔍 Search posts..."
@@ -263,21 +263,21 @@ export default function CommunityPage() {
             />
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-5 py-2 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-sm whitespace-nowrap"
+            className="px-3 py-2 md:px-5 md:py-2 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-xs md:text-sm whitespace-nowrap"
           >
             ➕ New post
           </button>
-          <div className="flex items-center gap-3">
-            <button className="p-2 hover:bg-[#252930] rounded-lg transition-colors text-gray-400 hover:text-white">
+          <div className="flex items-center gap-2 md:gap-3">
+            <button className="p-1.5 md:p-2 hover:bg-[#252930] rounded-lg transition-colors text-gray-400 hover:text-white text-base md:text-lg">
               🔔
             </button>
-            <button className="p-2 hover:bg-[#252930] rounded-lg transition-colors text-gray-400 hover:text-white">
+            <button className="p-1.5 md:p-2 hover:bg-[#252930] rounded-lg transition-colors text-gray-400 hover:text-white text-base md:text-lg">
               📌
             </button>
-            <div className="w-9 h-9 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+            <div className="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
               👤
             </div>
           </div>
@@ -285,9 +285,9 @@ export default function CommunityPage() {
       </nav>
 
       {/* Main Container */}
-      <div className="grid grid-cols-[240px_1fr] h-screen pt-[60px] overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] h-screen pt-[60px] overflow-hidden">
         {/* Left Sidebar */}
-        <aside className="bg-[#1C1F26] border-r border-[#2D3138] overflow-y-auto flex flex-col py-4">
+        <aside className="hidden md:flex bg-[#1C1F26] border-r border-[#2D3138] overflow-y-auto flex-col py-4">
           {/* Navigation */}
           <nav className="py-4 border-b border-[#2D3138]">
             <div className="flex items-center px-4 py-3 text-gray-400 hover:bg-[#252930] hover:text-white transition-colors cursor-pointer gap-3 border-l-3 border-[#00ffc8] bg-[#2A2D35] text-[#00ffc8]">
@@ -353,7 +353,7 @@ export default function CommunityPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="bg-[#0E1217] overflow-y-auto p-6">
+        <main className="bg-[#0E1217] overflow-y-auto p-4 md:p-6">
           {/* Filter Tabs */}
           <div className="flex gap-2 mb-6 border-b border-[#2D3138] pb-2">
             {[
@@ -364,7 +364,7 @@ export default function CommunityPage() {
               <button
                 key={filter.id}
                 onClick={() => setSelectedFilter(filter.id)}
-                className={`px-5 py-2 rounded-md text-sm transition-all ${
+                className={`px-3 md:px-5 py-2 rounded-md text-xs md:text-sm transition-all ${
                   selectedFilter === filter.id
                     ? 'bg-[#1C1F26] text-[#00ffc8] border-b-2 border-[#00ffc8]'
                     : 'text-gray-400 hover:bg-[#1C1F26] hover:text-white'
@@ -422,21 +422,21 @@ export default function CommunityPage() {
       {/* Create Post Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-4">
-          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-2xl p-8 relative">
+          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowCreateModal(false)}
-              className="absolute right-6 top-6 text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
+              className="absolute right-4 top-4 md:right-6 md:top-6 text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
             >
               ×
             </button>
-            <h3 className="text-[#00ffc8] text-2xl mb-6">✏️ Share Your Thoughts</h3>
+            <h3 className="text-[#00ffc8] text-xl md:text-2xl mb-6">✏️ Share Your Thoughts</h3>
             <form onSubmit={handleCreatePost}>
               <input
                 type="text"
                 placeholder="What's your question or project about?"
                 value={newPostTitle}
                 onChange={(e) => setNewPostTitle(e.target.value)}
-                className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white mb-4 focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all"
+                className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white mb-4 focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all text-sm md:text-base"
                 required
               />
               <textarea
@@ -444,14 +444,14 @@ export default function CommunityPage() {
                 value={newPostContent}
                 onChange={(e) => setNewPostContent(e.target.value)}
                 rows={6}
-                className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white mb-4 focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all resize-none"
+                className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white mb-4 focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all resize-none text-sm md:text-base"
                 required
               />
-              <div className="grid grid-cols-[200px_1fr] gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4">
                 <select
                   value={newPostCategory}
                   onChange={(e) => setNewPostCategory(e.target.value as any)}
-                  className="px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all"
+                  className="px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all text-sm md:text-base"
                   required
                 >
                   <option value="">Select Category</option>
@@ -461,7 +461,7 @@ export default function CommunityPage() {
                 </select>
                 <button
                   type="submit"
-                  className="px-8 py-3 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all"
+                  className="px-8 py-3 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-sm md:text-base"
                 >
                   Post to Community
                 </button>
@@ -474,10 +474,10 @@ export default function CommunityPage() {
       {/* Post Detail Modal */}
       {showPostModal && selectedPost && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-4">
-          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto p-8 relative">
+          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto p-6 md:p-8 relative">
             <button
               onClick={() => setShowPostModal(false)}
-              className="absolute right-6 top-6 text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
+              className="absolute right-4 top-4 md:right-6 md:top-6 text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
             >
               ×
             </button>
@@ -487,19 +487,19 @@ export default function CommunityPage() {
               <span className={`inline-block px-3 py-1 rounded-xl text-xs font-semibold mb-4 ${getCategoryStyles(selectedPost.category)}`}>
                 {getCategoryIcon(selectedPost.category)} {selectedPost.category.charAt(0).toUpperCase() + selectedPost.category.slice(1)}
               </span>
-              <h2 className="text-3xl font-bold text-white mb-4">{selectedPost.title}</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{selectedPost.title}</h2>
               <div className="text-sm text-gray-400">
                 By {selectedPost.author} • {selectedPost.time}
               </div>
             </div>
 
             {/* Post Content */}
-            <div className="bg-[#252930] p-6 rounded-xl mb-8 text-white/90 leading-relaxed">
+            <div className="bg-[#252930] p-4 md:p-6 rounded-xl mb-8 text-white/90 leading-relaxed text-sm md:text-base">
               {selectedPost.content}
             </div>
 
             {/* Post Stats */}
-            <div className="flex gap-6 text-sm text-gray-400 mb-8 pb-8 border-b border-[#2D3138]">
+            <div className="flex gap-4 md:gap-6 text-sm text-gray-400 mb-8 pb-8 border-b border-[#2D3138]">
               <span>👍 {selectedPost.likes}</span>
               <span>💬 {selectedPost.comments}</span>
               <span>👁️ {selectedPost.views}</span>
@@ -507,7 +507,7 @@ export default function CommunityPage() {
 
             {/* Comments Section */}
             <div>
-              <h3 className="text-[#00ffc8] text-xl mb-6">
+              <h3 className="text-[#00ffc8] text-lg md:text-xl mb-6">
                 💬 Comments ({comments[selectedPost.id]?.length || 0})
               </h3>
 
@@ -517,11 +517,11 @@ export default function CommunityPage() {
                   placeholder="Share your thoughts or solution..."
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-xl text-white mb-4 focus:outline-none focus:border-[#00ffc8] resize-none min-h-[100px]"
+                  className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-xl text-white mb-4 focus:outline-none focus:border-[#00ffc8] resize-none min-h-[100px] text-sm md:text-base"
                 />
                 <button
                   onClick={handleAddComment}
-                  className="px-8 py-3 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all"
+                  className="px-6 md:px-8 py-2.5 md:py-3 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-sm md:text-base"
                 >
                   Post Comment
                 </button>
