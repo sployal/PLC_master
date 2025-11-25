@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 
 const generateParticleStyles = (count: number) => {
   const pseudoRandom = (seed: number) => {
@@ -22,6 +23,7 @@ const generateParticleStyles = (count: number) => {
 };
 
 export default function Home() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [stats, setStats] = useState({ students: 0, tutorials: 0, success: 0 });
   const statsRef = useRef<HTMLDivElement>(null);
@@ -156,16 +158,10 @@ export default function Home() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <button
-              onClick={() => scrollToSection('courses')}
+              onClick={() => router.push('/login')}
               className="px-10 py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-[#0a0e27] rounded-full font-semibold hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,255,200,0.4)] transition-all duration-300"
             >
-              Start Learning
-            </button>
-            <button
-              onClick={() => alert('Demo video would play here!\n\nIn a full implementation, this would open a video modal showcasing the platform.')}
-              className="px-10 py-4 bg-transparent border-2 border-cyan-400 text-white rounded-full font-semibold hover:bg-cyan-400/10 hover:scale-105 transition-all duration-300"
-            >
-              Watch Demo
+              Login
             </button>
           </div>
 
