@@ -14,6 +14,7 @@ interface Post {
   comments: number;
   views: number;
   solved: boolean;
+  image?: string;
 }
 
 interface Comment {
@@ -136,6 +137,7 @@ export default function CommunityPage() {
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostContent, setNewPostContent] = useState('');
   const [newPostCategory, setNewPostCategory] = useState<'help' | 'project' | 'discussion' | ''>('');
+  const [newPostImage, setNewPostImage] = useState<string>('');
 
   // Helper functions
   const getCategoryIcon = (category: string) => {
@@ -194,7 +196,8 @@ export default function CommunityPage() {
       likes: 0,
       comments: 0,
       views: 0,
-      solved: false
+      solved: false,
+      image: newPostImage || undefined
     };
 
     setPosts([newPost, ...posts]);
@@ -202,7 +205,20 @@ export default function CommunityPage() {
     setNewPostTitle('');
     setNewPostContent('');
     setNewPostCategory('');
+    setNewPostImage('');
     alert('🎉 Your post has been published to the community!');
+  };
+
+  // Handle image upload
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewPostImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Handle add comment
@@ -473,6 +489,36 @@ export default function CommunityPage() {
                 rows={6}
                 className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white mb-4 focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all resize-none text-sm md:text-base"
               />
+              
+              {/* Image Upload Section */}
+              <div className="mb-4">
+                <label className="block text-sm text-gray-400 mb-2">📷 Add Image (Optional)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="block w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-gray-400 cursor-pointer hover:border-[#00ffc8] transition-all text-sm md:text-base text-center"
+                >
+                  {newPostImage ? '✅ Image Selected - Click to Change' : '📤 Click to Upload Image'}
+                </label>
+                {newPostImage && (
+                  <div className="mt-4 relative">
+                    <img src={newPostImage} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                    <button
+                      onClick={() => setNewPostImage('')}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-all"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4">
                 <select
                   value={newPostCategory}
@@ -509,13 +555,31 @@ export default function CommunityPage() {
             
             {/* Post Header */}
             <div className="mb-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-full flex items-center justify-center text-xl flex-shrink-0">
+                  👤
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold text-lg">{selectedPost.author}</h3>
+                  <p className="text-sm text-gray-400">{selectedPost.time}</p>
+                </div>
+              </div>
+              
               <span className={`inline-block px-3 py-1 rounded-xl text-xs font-semibold mb-4 ${getCategoryStyles(selectedPost.category)}`}>
                 {getCategoryIcon(selectedPost.category)} {selectedPost.category.charAt(0).toUpperCase() + selectedPost.category.slice(1)}
               </span>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{selectedPost.title}</h2>
-              <div className="text-sm text-gray-400">
-                By {selectedPost.author} • {selectedPost.time}
-              </div>
+              
+              {/* Display Image if exists */}
+              {selectedPost.image && (
+                <div className="mb-6">
+                  <img 
+                    src={selectedPost.image} 
+                    alt={selectedPost.title} 
+                    className="w-full h-auto max-h-[500px] object-cover rounded-xl border border-[#2D3138]"
+                  />
+                </div>
+              )}
             </div>
 
             {/* Post Content */}
