@@ -134,6 +134,8 @@ export default function CommunityPage() {
   const [newComment, setNewComment] = useState('');
   const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<number>>(new Set());
   const [showBookmarks, setShowBookmarks] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeMobileTab, setActiveMobileTab] = useState<'home' | 'explore' | 'bookmarks' | 'activity' | 'profile'>('home');
 
   // Form states
   const [newPostTitle, setNewPostTitle] = useState('');
@@ -334,6 +336,17 @@ export default function CommunityPage() {
           <div className="text-lg md:text-xl font-bold bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] bg-clip-text text-transparent whitespace-nowrap">
             ⚡ PLC Master
           </div>
+          {/* Mobile Search */}
+          <div className="flex-1 max-w-md md:hidden">
+            <input
+              type="text"
+              placeholder="🔍 Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-1.5 bg-[#252930] border border-[#2D3138] rounded-lg text-white text-xs focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all"
+            />
+          </div>
+          {/* Desktop Search */}
           <div className="flex-1 max-w-md hidden md:block">
             <input
               type="text"
@@ -345,13 +358,21 @@ export default function CommunityPage() {
           </div>
         </div>
         <div className="flex items-center gap-2 md:gap-4">
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 hover:bg-[#252930] rounded-lg transition-colors text-gray-400 hover:text-white"
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-3 py-2 md:px-5 md:py-2 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-xs md:text-sm whitespace-nowrap"
           >
-            ➕ New post
+            <span className="hidden md:inline">➕ New post</span>
+            <span className="md:hidden">➕</span>
           </button>
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="hidden md:flex items-center gap-2 md:gap-3">
             <button className="p-1.5 md:p-2 hover:bg-[#252930] rounded-lg transition-colors text-gray-400 hover:text-white text-base md:text-lg">
               🔔
             </button>
@@ -364,6 +385,128 @@ export default function CommunityPage() {
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu Drawer */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black/60 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)}>
+          <div 
+            className="fixed right-0 top-[60px] bottom-0 w-64 bg-[#1C1F26] border-l border-[#2D3138] overflow-y-auto custom-scrollbar"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <nav className="py-4 border-b border-[#2D3138]">
+              <div 
+                onClick={() => {
+                  setShowBookmarks(false);
+                  setSelectedCategory('all');
+                  setActiveMobileTab('home');
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center px-4 py-3 transition-colors cursor-pointer gap-3 ${
+                  !showBookmarks && activeMobileTab === 'home'
+                    ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
+                    : 'text-gray-400 hover:bg-[#252930] hover:text-white'
+                }`}
+              >
+                <span className="text-xl">📱</span>
+                <span className="text-sm">For You</span>
+              </div>
+              <div 
+                onClick={() => {
+                  setActiveMobileTab('explore');
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center px-4 py-3 transition-colors cursor-pointer gap-3 ${
+                  activeMobileTab === 'explore'
+                    ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
+                    : 'text-gray-400 hover:bg-[#252930] hover:text-white'
+                }`}
+              >
+                <span className="text-xl">🔥</span>
+                <span className="text-sm">Explore</span>
+              </div>
+              <div 
+                onClick={() => {
+                  setShowBookmarks(!showBookmarks);
+                  setSelectedCategory('all');
+                  setActiveMobileTab('bookmarks');
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center justify-between px-4 py-3 transition-colors cursor-pointer gap-3 ${
+                  showBookmarks || activeMobileTab === 'bookmarks'
+                    ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
+                    : 'text-gray-400 hover:bg-[#252930] hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">🔖</span>
+                  <span className="text-sm">Bookmarks</span>
+                </div>
+                <span className="bg-[#2D3138] px-2 py-0.5 rounded-full text-xs text-gray-400">
+                  {bookmarkedPosts.size}
+                </span>
+              </div>
+              <div 
+                onClick={() => {
+                  setActiveMobileTab('activity');
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center px-4 py-3 transition-colors cursor-pointer gap-3 ${
+                  activeMobileTab === 'activity'
+                    ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
+                    : 'text-gray-400 hover:bg-[#252930] hover:text-white'
+                }`}
+              >
+                <span className="text-xl">🔔</span>
+                <span className="text-sm">Activity</span>
+              </div>
+              <div 
+                onClick={() => {
+                  setActiveMobileTab('profile');
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center px-4 py-3 transition-colors cursor-pointer gap-3 ${
+                  activeMobileTab === 'profile'
+                    ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
+                    : 'text-gray-400 hover:bg-[#252930] hover:text-white'
+                }`}
+              >
+                <span className="text-xl">👤</span>
+                <span className="text-sm">Profile</span>
+              </div>
+            </nav>
+            {/* Categories in Mobile Menu */}
+            <div className="py-4 border-b border-[#2D3138]">
+              <div className="flex justify-between items-center px-4 pb-3">
+                <h4 className="text-xs text-gray-400 uppercase tracking-wider">📊 Categories</h4>
+              </div>
+              <ul>
+                {[
+                  { id: 'all', label: '🌐 All Topics', count: 45 },
+                  { id: 'help', label: '❓ Help Needed', count: 18 },
+                  { id: 'project', label: '🚀 Projects', count: 15 },
+                  { id: 'discussion', label: '💭 Discussions', count: 12 }
+                ].map(cat => (
+                  <li
+                    key={cat.id}
+                    onClick={() => {
+                      setSelectedCategory(cat.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`flex justify-between items-center px-4 py-3 cursor-pointer transition-colors ${
+                      selectedCategory === cat.id
+                        ? 'bg-[#2A2D35] text-[#00ffc8] border-l-3 border-[#00ffc8]'
+                        : 'text-gray-400 hover:bg-[#252930] hover:text-white'
+                    }`}
+                  >
+                    <span className="text-sm">{cat.label}</span>
+                    <span className="bg-[#2D3138] px-2 py-0.5 rounded-full text-xs">{cat.count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Container */}
       <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] h-screen pt-[60px] overflow-hidden">
@@ -459,7 +602,7 @@ export default function CommunityPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="bg-[#0E1217] overflow-y-auto p-4 md:p-6 custom-scrollbar">
+        <main className="bg-[#0E1217] overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 custom-scrollbar">
           {/* Filter Tabs */}
           <div className="flex gap-2 mb-6 border-b border-[#2D3138] pb-2">
             {[
@@ -770,6 +913,87 @@ export default function CommunityPage() {
           </div>
         </div>
       )}
+
+      {/* Bottom Navigation Bar - Mobile Only */}
+      <nav className="fixed bottom-0 left-0 right-0 h-[70px] bg-[#1C1F26] border-t border-[#2D3138] rounded-t-2xl flex items-center justify-around md:hidden z-50 safe-area-inset-bottom">
+        <button
+          onClick={() => {
+            setShowBookmarks(false);
+            setSelectedCategory('all');
+            setActiveMobileTab('home');
+          }}
+          className={`flex flex-col items-center justify-center gap-1 py-2 px-4 transition-colors ${
+            !showBookmarks && activeMobileTab === 'home'
+              ? 'text-[#00ffc8]'
+              : 'text-gray-400'
+          }`}
+        >
+          <span className="text-2xl">🏠</span>
+          <span className="text-xs font-medium">Home</span>
+        </button>
+        <button
+          onClick={() => {
+            setActiveMobileTab('explore');
+            setShowBookmarks(false);
+          }}
+          className={`flex flex-col items-center justify-center gap-1 py-2 px-4 transition-colors ${
+            activeMobileTab === 'explore'
+              ? 'text-[#00ffc8]'
+              : 'text-gray-400'
+          }`}
+        >
+          <span className="text-2xl">🔍</span>
+          <span className="text-xs font-medium">Explore</span>
+        </button>
+        <button
+          onClick={() => {
+            setShowBookmarks(!showBookmarks);
+            setSelectedCategory('all');
+            setActiveMobileTab('bookmarks');
+          }}
+          className={`flex flex-col items-center justify-center gap-1 py-2 px-4 transition-colors relative ${
+            showBookmarks || activeMobileTab === 'bookmarks'
+              ? 'text-[#00ffc8]'
+              : 'text-gray-400'
+          }`}
+        >
+          <span className="text-2xl">🔖</span>
+          {bookmarkedPosts.size > 0 && (
+            <span className="absolute top-0 right-2 bg-[#00ffc8] text-[#0E1217] text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              {bookmarkedPosts.size}
+            </span>
+          )}
+          <span className="text-xs font-medium">Bookmarks</span>
+        </button>
+        <button
+          onClick={() => {
+            setActiveMobileTab('activity');
+            setShowBookmarks(false);
+          }}
+          className={`flex flex-col items-center justify-center gap-1 py-2 px-4 transition-colors ${
+            activeMobileTab === 'activity'
+              ? 'text-[#00ffc8]'
+              : 'text-gray-400'
+          }`}
+        >
+          <span className="text-2xl">🔔</span>
+          <span className="text-xs font-medium">Activity</span>
+        </button>
+        <button
+          onClick={() => {
+            setActiveMobileTab('profile');
+            setShowBookmarks(false);
+          }}
+          className={`flex flex-col items-center justify-center gap-1 py-2 px-4 transition-colors ${
+            activeMobileTab === 'profile'
+              ? 'text-[#00ffc8]'
+              : 'text-gray-400'
+          }`}
+        >
+          <span className="text-2xl">👤</span>
+          <span className="text-xs font-medium">Profile</span>
+        </button>
+      </nav>
     </div>
   );
 }
