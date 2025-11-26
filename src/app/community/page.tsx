@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Types
 interface Post {
@@ -291,6 +291,37 @@ export default function CommunityPage() {
   const openPostModal = (post: Post) => {
     setSelectedPost(post);
     setShowPostModal(true);
+    // Push state to history for back button support
+    if (typeof window !== 'undefined') {
+      window.history.pushState({ modalOpen: true }, '');
+    }
+  };
+
+  // Handle browser back button
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (showPostModal) {
+        setShowPostModal(false);
+        setSelectedPost(null);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('popstate', handlePopState);
+      return () => {
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }
+  }, [showPostModal]);
+
+  // Clean up history when modal closes normally (not via back button)
+  const closePostModal = () => {
+    setShowPostModal(false);
+    setSelectedPost(null);
+    // Replace current state instead of going back to avoid navigation issues
+    if (typeof window !== 'undefined' && window.history.state?.modalOpen) {
+      window.history.replaceState({}, '');
+    }
   };
 
   const filteredPosts = getFilteredPosts();
@@ -799,8 +830,8 @@ export default function CommunityPage() {
 
       {/* Post Detail Modal */}
       {showPostModal && selectedPost && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-0 md:p-4">
-          <div className="bg-[#1C1F26] border-0 md:border border-[#2D3138] rounded-none md:rounded-2xl w-full h-full md:h-auto md:max-w-4xl md:max-h-[85vh] overflow-y-auto p-4 md:p-6 lg:p-8 relative custom-scrollbar">
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-4">
+          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto p-6 md:p-8 relative custom-scrollbar">
             <div className="absolute right-4 top-4 md:right-6 md:top-6 flex items-center gap-3">
               <button
                 onClick={(e) => selectedPost && toggleBookmark(selectedPost.id, e)}
@@ -814,7 +845,7 @@ export default function CommunityPage() {
                 <span className="text-xl">🔖</span>
               </button>
               <button
-                onClick={() => setShowPostModal(false)}
+                onClick={closePostModal}
                 className="text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
               >
                 ×
