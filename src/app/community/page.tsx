@@ -205,7 +205,7 @@ export default function CommunityPage() {
       id: posts.length + 1,
       title: newPostTitle,
       content: newPostContent,
-      category: newPostCategory,
+      category: newPostCategory as 'help' | 'project' | 'discussion',
       author: "You",
       time: "Just now",
       likes: 0,
