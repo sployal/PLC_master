@@ -1,8 +1,12 @@
-'use client';
+ 'use client';
 
 import { useState, useEffect } from 'react';
+import LeftSidebar from '../../../components/community/LeftSidebar';
+import MainContent from '../../../components/community/MainContent';
+import CreatePostModal from '../../../components/community/CreatePostModal';
+import PostDetailModal from '../../../components/community/PostDetailModal';
 
-// Types
+// Local types (moved back here per request)
 interface Post {
   id: number;
   title: string;
@@ -149,23 +153,7 @@ export default function CommunityPage() {
   });
 
   // Helper functions
-  const getCategoryIcon = (category: string) => {
-    const icons = {
-      help: '❓',
-      project: '🚀',
-      discussion: '💭'
-    };
-    return icons[category as keyof typeof icons] || '📄';
-  };
-
-  const getCategoryStyles = (category: string) => {
-    const styles = {
-      help: 'bg-red-500/20 text-red-400',
-      project: 'bg-blue-500/20 text-blue-400',
-      discussion: 'bg-purple-500/20 text-purple-400'
-    };
-    return styles[category as keyof typeof styles] || 'bg-gray-500/20 text-gray-400';
-  };
+  // helper functions now live in component utilities
 
   // Toggle bookmark
   const toggleBookmark = (postId: number, e: React.MouseEvent) => {
@@ -542,407 +530,56 @@ export default function CommunityPage() {
       {/* Main Container */}
       <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] h-screen pt-[60px] overflow-hidden">
         {/* Left Sidebar */}
-        <aside className="hidden md:flex bg-[#1C1F26] border-r border-[#2D3138] overflow-y-auto flex-col py-4 no-scrollbar">
-          {/* Navigation */}
-          <nav className="py-4 border-b border-[#2D3138]">
-            <div 
-              onClick={() => {
-                setShowBookmarks(false);
-                setSelectedCategory('all');
-              }}
-              className={`flex items-center px-4 py-3 transition-colors cursor-pointer gap-3 ${
-                !showBookmarks 
-                  ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
-                  : 'text-gray-400 hover:bg-[#252930] hover:text-white'
-              }`}
-            >
-              <span className="text-xl">📱</span>
-              <span className="text-sm">For You</span>
-            </div>
-            <div className="flex items-center px-4 py-3 text-gray-400 hover:bg-[#252930] hover:text-white transition-colors cursor-pointer gap-3">
-              <span className="text-xl">👥</span>
-              <span className="text-sm">Following</span>
-            </div>
-            <div className="flex items-center px-4 py-3 text-gray-400 hover:bg-[#252930] hover:text-white transition-colors cursor-pointer gap-3">
-              <span className="text-xl">🔥</span>
-              <span className="text-sm">Explore</span>
-            </div>
-            <div 
-              onClick={() => {
-                setShowBookmarks(!showBookmarks);
-                setSelectedCategory('all');
-              }}
-              className={`flex items-center justify-between px-4 py-3 transition-colors cursor-pointer gap-3 ${
-                showBookmarks 
-                  ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
-                  : 'text-gray-400 hover:bg-[#252930] hover:text-white'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-xl">🔖</span>
-                <span className="text-sm">Bookmarks</span>
-              </div>
-              <span className="bg-[#2D3138] px-2 py-0.5 rounded-full text-xs text-gray-400">
-                {bookmarkedPosts.size}
-              </span>
-            </div>
-          </nav>
-
-          {/* Categories */}
-          <div className="py-4 border-b border-[#2D3138]">
-            <div className="flex justify-between items-center px-4 pb-3">
-              <h4 className="text-xs text-gray-400 uppercase tracking-wider">📊 Categories</h4>
-              <button className="text-xs text-gray-400">▼</button>
-            </div>
-            <ul>
-              {[
-                { id: 'all', label: '🌐 All Topics', count: 45 },
-                { id: 'help', label: '❓ Help Needed', count: 18 },
-                { id: 'project', label: '🚀 Projects', count: 15 },
-                { id: 'discussion', label: '💭 Discussions', count: 12 }
-              ].map(cat => (
-                <li
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`flex justify-between items-center px-4 py-3 cursor-pointer transition-colors ${
-                    selectedCategory === cat.id
-                      ? 'bg-[#2A2D35] text-[#00ffc8] border-l-3 border-[#00ffc8]'
-                      : 'text-gray-400 hover:bg-[#252930] hover:text-white'
-                  }`}
-                >
-                  <span className="text-sm">{cat.label}</span>
-                  <span className="bg-[#2D3138] px-2 py-0.5 rounded-full text-xs">{cat.count}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* User Profile */}
-          <div className="mt-auto mx-4 mb-4 p-4 bg-[#252930] rounded-lg flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-full flex items-center justify-center text-lg flex-shrink-0">
-              👤
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-white mb-1">Welcome, Engineer!</h3>
-              <p className="text-xs text-gray-400 flex gap-2">
-                <span>🏆 50 Points</span>
-                <span>💬 12 Posts</span>
-              </p>
-            </div>
-          </div>
-        </aside>
+        <LeftSidebar
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          showBookmarks={showBookmarks}
+          setShowBookmarks={setShowBookmarks}
+          bookmarkedCount={bookmarkedPosts.size}
+        />
+        
 
         {/* Main Content */}
-        <main className="bg-[#0E1217] overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 custom-scrollbar">
-          {/* Filter Tabs */}
-          <div className="flex gap-2 mb-6 border-b border-[#2D3138] pb-2">
-            {[
-              { id: 'latest', label: '🕒 Latest' },
-              { id: 'popular', label: '🔥 Popular' },
-              { id: 'unsolved', label: '❓ Unsolved' }
-            ].map(filter => (
-              <button
-                key={filter.id}
-                onClick={() => setSelectedFilter(filter.id)}
-                className={`px-3 md:px-5 py-2 rounded-md text-xs md:text-sm transition-all ${
-                  selectedFilter === filter.id
-                    ? 'bg-[#1C1F26] text-[#00ffc8] border-b-2 border-[#00ffc8]'
-                    : 'text-gray-400 hover:bg-[#1C1F26] hover:text-white'
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Posts Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-8">
-            {filteredPosts.map(post => (
-              <div
-                key={post.id}
-                onClick={() => openPostModal(post)}
-                className="bg-[#1C1F26] border border-[#2D3138] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-4px] hover:border-[#00ffc8] hover:shadow-lg hover:shadow-[#00ffc8]/15 transition-all flex flex-col"
-              >
-                <div className="w-full h-[180px] bg-gradient-to-br from-[#1a1d29] to-[#2d1b4e] flex items-center justify-center text-5xl border-b border-[#2D3138] overflow-hidden">
-                  {post.image ? (
-                    <img 
-                      src={post.image} 
-                      alt={post.title} 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    getCategoryIcon(post.category)
-                  )}
-                </div>
-                <div className="p-4 flex-1 flex flex-col">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className={`px-3 py-1 rounded-xl text-xs font-semibold ${getCategoryStyles(post.category)}`}>
-                      {getCategoryIcon(post.category)} {post.category.charAt(0).toUpperCase() + post.category.slice(1)}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={(e) => toggleBookmark(post.id, e)}
-                        className={`p-1.5 rounded-lg transition-all hover:scale-110 ${
-                          bookmarkedPosts.has(post.id)
-                            ? 'text-yellow-400 hover:text-yellow-300 bg-yellow-400/10'
-                            : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-400/10'
-                        }`}
-                        title={bookmarkedPosts.has(post.id) ? 'Remove bookmark' : 'Add bookmark'}
-                      >
-                        <span className="text-base">🔖</span>
-                      </button>
-                      <span className="text-xs text-gray-400">{post.time}</span>
-                    </div>
-                  </div>
-                  <h3 className="text-base font-semibold text-white mb-2 line-clamp-2 leading-snug">
-                    {post.title}
-                  </h3>
-                  <p className="text-sm text-gray-400 mb-4 flex-1 line-clamp-3 leading-relaxed">
-                    {post.content}
-                  </p>
-                  <div className="flex justify-between items-center pt-3 border-t border-[#2D3138]">
-                    <div className="flex gap-4 text-xs text-gray-400">
-                      <span>👍 {post.likes}</span>
-                      <span>💬 {post.comments}</span>
-                      <span>👁️ {post.views}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-full flex items-center justify-center text-xs">
-                        👤
-                      </div>
-                      <span className="text-xs text-gray-400">{post.author}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
+        <MainContent
+          filteredPosts={filteredPosts}
+          selectedFilter={selectedFilter}
+          setSelectedFilter={setSelectedFilter}
+          bookmarkedPosts={bookmarkedPosts}
+          toggleBookmark={toggleBookmark}
+          openPostModal={openPostModal}
+        />
       </div>
 
       {/* Create Post Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-4">
-          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <button
-              onClick={() => setShowCreateModal(false)}
-              className="absolute right-4 top-4 md:right-6 md:top-6 text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
-            >
-              ×
-            </button>
-            <h3 className="text-[#00ffc8] text-xl md:text-2xl mb-6">✏️ Share Your Thoughts</h3>
-            <div>
-              <input
-                type="text"
-                placeholder="What's your question or project about?"
-                value={newPostTitle}
-                onChange={(e) => {
-                  setNewPostTitle(e.target.value);
-                  setFormErrors(prev => ({ ...prev, title: false }));
-                }}
-                className={`w-full px-4 py-3 bg-[#252930] border rounded-lg text-white mb-1 focus:outline-none focus:bg-[#2A2D35] transition-all text-sm md:text-base ${
-                  formErrors.title ? 'border-red-500 focus:border-red-500' : 'border-[#2D3138] focus:border-[#00ffc8]'
-                }`}
-              />
-              {formErrors.title && (
-                <p className="text-red-400 text-xs mb-3 px-1">⚠️ Please enter a title</p>
-              )}
-              {!formErrors.title && <div className="mb-3"></div>}
-              
-              <textarea
-                placeholder="Describe your issue or share your project details..."
-                value={newPostContent}
-                onChange={(e) => {
-                  setNewPostContent(e.target.value);
-                  setFormErrors(prev => ({ ...prev, content: false }));
-                }}
-                rows={6}
-                className={`w-full px-4 py-3 bg-[#252930] border rounded-lg text-white mb-1 focus:outline-none focus:bg-[#2A2D35] transition-all resize-none text-sm md:text-base ${
-                  formErrors.content ? 'border-red-500 focus:border-red-500' : 'border-[#2D3138] focus:border-[#00ffc8]'
-                }`}
-              />
-              {formErrors.content && (
-                <p className="text-red-400 text-xs mb-3 px-1">⚠️ Please enter content</p>
-              )}
-              {!formErrors.content && <div className="mb-3"></div>}
-              
-              {/* Image Upload Section */}
-              <div className="mb-4">
-                <label className="block text-sm text-gray-400 mb-2">📷 Add Image (Optional)</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  id="image-upload"
-                />
-                <label
-                  htmlFor="image-upload"
-                  className="block w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-gray-400 cursor-pointer hover:border-[#00ffc8] transition-all text-sm md:text-base text-center"
-                >
-                  {newPostImage ? '✅ Image Selected - Click to Change' : '📤 Click to Upload Image'}
-                </label>
-                {newPostImage && (
-                  <div className="mt-4 relative">
-                    <img src={newPostImage} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
-                    <button
-                      onClick={() => setNewPostImage('')}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-all"
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4">
-                <div>
-                  <select
-                    value={newPostCategory}
-                    onChange={(e) => {
-                      setNewPostCategory(e.target.value as any);
-                      setFormErrors(prev => ({ ...prev, category: false }));
-                    }}
-                    className={`w-full px-4 py-3 bg-[#252930] border rounded-lg text-white focus:outline-none focus:bg-[#2A2D35] transition-all text-sm md:text-base ${
-                      formErrors.category ? 'border-red-500 focus:border-red-500' : 'border-[#2D3138] focus:border-[#00ffc8]'
-                    }`}
-                  >
-                    <option value="">Select Category</option>
-                    <option value="help">❓ Help Needed</option>
-                    <option value="project">🚀 Project Showcase</option>
-                    <option value="discussion">💭 Discussion</option>
-                  </select>
-                  {formErrors.category && (
-                    <p className="text-red-400 text-xs mt-1 px-1">⚠️ Select category</p>
-                  )}
-                </div>
-                <button
-                  onClick={handleCreatePost}
-                  className="px-8 py-3 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-sm md:text-base"
-                >
-                  Post to Community
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CreatePostModal
+          setShowCreateModal={setShowCreateModal}
+          newPostTitle={newPostTitle}
+          setNewPostTitle={setNewPostTitle}
+          newPostContent={newPostContent}
+          setNewPostContent={setNewPostContent}
+          newPostCategory={newPostCategory}
+          setNewPostCategory={setNewPostCategory}
+          newPostImage={newPostImage}
+          setNewPostImage={setNewPostImage}
+          formErrors={formErrors}
+          handleImageUpload={handleImageUpload}
+          handleCreatePost={handleCreatePost}
+        />
       )}
 
       {/* Post Detail Modal */}
       {showPostModal && selectedPost && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-0 md:p-4">
-          <div className="bg-[#1C1F26] border-0 md:border border-[#2D3138] rounded-none md:rounded-2xl w-full h-full md:w-auto md:h-auto md:max-w-4xl md:max-h-[85vh] overflow-y-auto p-4 md:p-6 lg:p-8 relative custom-scrollbar">
-            <div className="absolute right-4 top-4 md:right-6 md:top-6 flex items-center gap-3">
-              <button
-                onClick={(e) => selectedPost && toggleBookmark(selectedPost.id, e)}
-                className={`p-2 rounded-lg transition-all hover:scale-110 ${
-                  selectedPost && bookmarkedPosts.has(selectedPost.id)
-                    ? 'text-yellow-400 hover:text-yellow-300 bg-yellow-400/10'
-                    : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-400/10'
-                }`}
-                title={selectedPost && bookmarkedPosts.has(selectedPost.id) ? 'Remove bookmark' : 'Add bookmark'}
-              >
-                <span className="text-xl">🔖</span>
-              </button>
-              <button
-                onClick={closePostModal}
-                className="text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
-              >
-                ×
-              </button>
-            </div>
-            
-            {/* Post Header */}
-            <div className="mb-8">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-full flex items-center justify-center text-xl flex-shrink-0">
-                  👤
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold text-lg">{selectedPost.author}</h3>
-                  <p className="text-sm text-gray-400">{selectedPost.time}</p>
-                </div>
-              </div>
-              
-              <span className={`inline-block px-3 py-1 rounded-xl text-xs font-semibold mb-4 ${getCategoryStyles(selectedPost.category)}`}>
-                {getCategoryIcon(selectedPost.category)} {selectedPost.category.charAt(0).toUpperCase() + selectedPost.category.slice(1)}
-              </span>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{selectedPost.title}</h2>
-              
-              {/* Display Image if exists */}
-              {selectedPost.image && (
-                <div className="mb-6">
-                  <img 
-                    src={selectedPost.image} 
-                    alt={selectedPost.title} 
-                    className="w-full h-auto max-h-[500px] object-cover rounded-xl border border-[#2D3138]"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Post Content */}
-            <div className="bg-[#252930] p-4 md:p-6 rounded-xl mb-8 text-white/90 leading-relaxed text-sm md:text-base">
-              {selectedPost.content}
-            </div>
-
-            {/* Post Stats */}
-            <div className="flex gap-4 md:gap-6 items-center text-sm text-gray-400 mb-8 pb-8 border-b border-[#2D3138]">
-              <span>👍 {selectedPost.likes}</span>
-              <span>💬 {selectedPost.comments}</span>
-              <span>👁️ {selectedPost.views}</span>
-              <button
-                onClick={(e) => toggleBookmark(selectedPost.id, e)}
-                className={`ml-auto px-3 py-1.5 rounded-lg transition-all flex items-center gap-2 ${
-                  bookmarkedPosts.has(selectedPost.id)
-                    ? 'text-yellow-400 bg-yellow-400/10 hover:bg-yellow-400/20'
-                    : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-400/10'
-                }`}
-              >
-                <span>🔖</span>
-                <span className="text-xs">
-                  {bookmarkedPosts.has(selectedPost.id) ? 'Bookmarked' : 'Bookmark'}
-                </span>
-              </button>
-            </div>
-
-            {/* Comments Section */}
-            <div>
-              <h3 className="text-[#00ffc8] text-lg md:text-xl mb-6">
-                💬 Comments ({comments[selectedPost.id]?.length || 0})
-              </h3>
-
-              {/* Comment Form */}
-              <div className="mb-8">
-                <textarea
-                  placeholder="Share your thoughts or solution..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-xl text-white mb-4 focus:outline-none focus:border-[#00ffc8] resize-none min-h-[100px] text-sm md:text-base"
-                />
-                <button
-                  onClick={handleAddComment}
-                  className="px-6 md:px-8 py-2.5 md:py-3 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-sm md:text-base"
-                >
-                  Post Comment
-                </button>
-              </div>
-
-              {/* Comments List */}
-              <div className="space-y-4">
-                {(comments[selectedPost.id] || []).map((comment, index) => (
-                  <div key={index} className="bg-[#252930] p-4 rounded-xl border-l-3 border-[#00ffc8]">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-[#00ffc8] font-semibold text-sm">{comment.author}</span>
-                      <span className="text-gray-400 text-xs">{comment.time}</span>
-                    </div>
-                    <p className="text-white/80 leading-relaxed text-sm">{comment.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <PostDetailModal
+          selectedPost={selectedPost}
+          closePostModal={closePostModal}
+          comments={comments}
+          bookmarkedPosts={bookmarkedPosts}
+          toggleBookmark={toggleBookmark}
+          handleAddComment={handleAddComment}
+          newComment={newComment}
+          setNewComment={setNewComment}
+        />
       )}
 
       {/* Bottom Navigation Bar - Mobile Only */}
