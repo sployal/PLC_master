@@ -160,12 +160,10 @@ export default function CommunityPage() {
   const getFilteredPosts = () => {
     let filtered = [...posts];
 
-    // Category filter
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(post => post.category === selectedCategory);
     }
 
-    // Search filter
     if (searchTerm) {
       filtered = filtered.filter(post =>
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -173,7 +171,6 @@ export default function CommunityPage() {
       );
     }
 
-    // Sort filter
     if (selectedFilter === 'popular') {
       filtered.sort((a, b) => b.likes - a.likes);
     } else if (selectedFilter === 'unsolved') {
@@ -184,9 +181,7 @@ export default function CommunityPage() {
   };
 
   // Handle create post
-  const handleCreatePost = (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleCreatePost = () => {
     if (!newPostTitle || !newPostContent || !newPostCategory) return;
 
     const newPost: Post = {
@@ -247,6 +242,39 @@ export default function CommunityPage() {
 
   return (
     <div className="min-h-screen bg-[#0E1217] text-white">
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: linear-gradient(180deg, #4a5568 0%, #2d3748 100%);
+          border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(180deg, #5a6678 0%, #3d4758 100%);
+        }
+
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: #4a5568 transparent;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+
       {/* Top Navbar */}
       <nav className="fixed top-0 left-0 right-0 h-[60px] bg-[#1C1F26] border-b border-[#2D3138] flex justify-between items-center px-4 md:px-8 z-50">
         <div className="flex items-center gap-4 md:gap-8 flex-1">
@@ -287,7 +315,7 @@ export default function CommunityPage() {
       {/* Main Container */}
       <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] h-screen pt-[60px] overflow-hidden">
         {/* Left Sidebar */}
-        <aside className="hidden md:flex bg-[#1C1F26] border-r border-[#2D3138] overflow-y-auto flex-col py-4">
+        <aside className="hidden md:flex bg-[#1C1F26] border-r border-[#2D3138] overflow-y-auto flex-col py-4 no-scrollbar">
           {/* Navigation */}
           <nav className="py-4 border-b border-[#2D3138]">
             <div className="flex items-center px-4 py-3 text-gray-400 hover:bg-[#252930] hover:text-white transition-colors cursor-pointer gap-3 border-l-3 border-[#00ffc8] bg-[#2A2D35] text-[#00ffc8]">
@@ -353,7 +381,7 @@ export default function CommunityPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="bg-[#0E1217] overflow-y-auto p-4 md:p-6">
+        <main className="bg-[#0E1217] overflow-y-auto p-4 md:p-6 custom-scrollbar">
           {/* Filter Tabs */}
           <div className="flex gap-2 mb-6 border-b border-[#2D3138] pb-2">
             {[
@@ -422,7 +450,7 @@ export default function CommunityPage() {
       {/* Create Post Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-4">
-          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto custom-scrollbar">
             <button
               onClick={() => setShowCreateModal(false)}
               className="absolute right-4 top-4 md:right-6 md:top-6 text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
@@ -430,14 +458,13 @@ export default function CommunityPage() {
               ×
             </button>
             <h3 className="text-[#00ffc8] text-xl md:text-2xl mb-6">✏️ Share Your Thoughts</h3>
-            <form onSubmit={handleCreatePost}>
+            <div>
               <input
                 type="text"
                 placeholder="What's your question or project about?"
                 value={newPostTitle}
                 onChange={(e) => setNewPostTitle(e.target.value)}
                 className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white mb-4 focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all text-sm md:text-base"
-                required
               />
               <textarea
                 placeholder="Describe your issue or share your project details..."
@@ -445,14 +472,12 @@ export default function CommunityPage() {
                 onChange={(e) => setNewPostContent(e.target.value)}
                 rows={6}
                 className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white mb-4 focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all resize-none text-sm md:text-base"
-                required
               />
               <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4">
                 <select
                   value={newPostCategory}
                   onChange={(e) => setNewPostCategory(e.target.value as any)}
                   className="px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all text-sm md:text-base"
-                  required
                 >
                   <option value="">Select Category</option>
                   <option value="help">❓ Help Needed</option>
@@ -460,13 +485,13 @@ export default function CommunityPage() {
                   <option value="discussion">💭 Discussion</option>
                 </select>
                 <button
-                  type="submit"
+                  onClick={handleCreatePost}
                   className="px-8 py-3 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-sm md:text-base"
                 >
                   Post to Community
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}
@@ -474,7 +499,7 @@ export default function CommunityPage() {
       {/* Post Detail Modal */}
       {showPostModal && selectedPost && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-4">
-          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto p-6 md:p-8 relative">
+          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto p-6 md:p-8 relative custom-scrollbar">
             <button
               onClick={() => setShowPostModal(false)}
               className="absolute right-4 top-4 md:right-6 md:top-6 text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
