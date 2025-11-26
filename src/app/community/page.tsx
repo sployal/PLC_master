@@ -132,6 +132,8 @@ export default function CommunityPage() {
   const [showPostModal, setShowPostModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [newComment, setNewComment] = useState('');
+  const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<number>>(new Set());
+  const [showBookmarks, setShowBookmarks] = useState(false);
 
   // Form states
   const [newPostTitle, setNewPostTitle] = useState('');
@@ -163,9 +165,28 @@ export default function CommunityPage() {
     return styles[category as keyof typeof styles] || 'bg-gray-500/20 text-gray-400';
   };
 
+  // Toggle bookmark
+  const toggleBookmark = (postId: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent opening post modal when clicking bookmark
+    setBookmarkedPosts(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(postId)) {
+        newSet.delete(postId);
+      } else {
+        newSet.add(postId);
+      }
+      return newSet;
+    });
+  };
+
   // Filter and search posts
   const getFilteredPosts = () => {
     let filtered = [...posts];
+
+    // Filter by bookmarks if bookmarks view is active
+    if (showBookmarks) {
+      filtered = filtered.filter(post => bookmarkedPosts.has(post.id));
+    }
 
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(post => post.category === selectedCategory);
@@ -350,7 +371,17 @@ export default function CommunityPage() {
         <aside className="hidden md:flex bg-[#1C1F26] border-r border-[#2D3138] overflow-y-auto flex-col py-4 no-scrollbar">
           {/* Navigation */}
           <nav className="py-4 border-b border-[#2D3138]">
-            <div className="flex items-center px-4 py-3 text-gray-400 hover:bg-[#252930] hover:text-white transition-colors cursor-pointer gap-3 border-l-3 border-[#00ffc8] bg-[#2A2D35] text-[#00ffc8]">
+            <div 
+              onClick={() => {
+                setShowBookmarks(false);
+                setSelectedCategory('all');
+              }}
+              className={`flex items-center px-4 py-3 transition-colors cursor-pointer gap-3 ${
+                !showBookmarks 
+                  ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
+                  : 'text-gray-400 hover:bg-[#252930] hover:text-white'
+              }`}
+            >
               <span className="text-xl">📱</span>
               <span className="text-sm">For You</span>
             </div>
@@ -362,9 +393,19 @@ export default function CommunityPage() {
               <span className="text-xl">🔥</span>
               <span className="text-sm">Explore</span>
             </div>
-            <div className="flex items-center px-4 py-3 text-gray-400 hover:bg-[#252930] hover:text-white transition-colors cursor-pointer gap-3">
-              <span className="text-xl">📚</span>
-              <span className="text-sm">History</span>
+            <div 
+              onClick={() => {
+                setShowBookmarks(!showBookmarks);
+                setSelectedCategory('all');
+              }}
+              className={`flex items-center px-4 py-3 transition-colors cursor-pointer gap-3 ${
+                showBookmarks 
+                  ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
+                  : 'text-gray-400 hover:bg-[#252930] hover:text-white'
+              }`}
+            >
+              <span className="text-xl">🔖</span>
+              <span className="text-sm">Bookmarks</span>
             </div>
           </nav>
 
@@ -459,7 +500,20 @@ export default function CommunityPage() {
                     <span className={`px-3 py-1 rounded-xl text-xs font-semibold ${getCategoryStyles(post.category)}`}>
                       {getCategoryIcon(post.category)} {post.category.charAt(0).toUpperCase() + post.category.slice(1)}
                     </span>
-                    <span className="text-xs text-gray-400">{post.time}</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={(e) => toggleBookmark(post.id, e)}
+                        className={`p-1.5 rounded-lg transition-all hover:scale-110 ${
+                          bookmarkedPosts.has(post.id)
+                            ? 'text-yellow-400 hover:text-yellow-300 bg-yellow-400/10'
+                            : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-400/10'
+                        }`}
+                        title={bookmarkedPosts.has(post.id) ? 'Remove bookmark' : 'Add bookmark'}
+                      >
+                        <span className="text-base">🔖</span>
+                      </button>
+                      <span className="text-xs text-gray-400">{post.time}</span>
+                    </div>
                   </div>
                   <h3 className="text-base font-semibold text-white mb-2 line-clamp-2 leading-snug">
                     {post.title}
@@ -599,12 +653,25 @@ export default function CommunityPage() {
       {showPostModal && selectedPost && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-4">
           <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto p-6 md:p-8 relative custom-scrollbar">
-            <button
-              onClick={() => setShowPostModal(false)}
-              className="absolute right-4 top-4 md:right-6 md:top-6 text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
-            >
-              ×
-            </button>
+            <div className="absolute right-4 top-4 md:right-6 md:top-6 flex items-center gap-3">
+              <button
+                onClick={(e) => selectedPost && toggleBookmark(selectedPost.id, e)}
+                className={`p-2 rounded-lg transition-all hover:scale-110 ${
+                  selectedPost && bookmarkedPosts.has(selectedPost.id)
+                    ? 'text-yellow-400 hover:text-yellow-300 bg-yellow-400/10'
+                    : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-400/10'
+                }`}
+                title={selectedPost && bookmarkedPosts.has(selectedPost.id) ? 'Remove bookmark' : 'Add bookmark'}
+              >
+                <span className="text-xl">🔖</span>
+              </button>
+              <button
+                onClick={() => setShowPostModal(false)}
+                className="text-2xl text-gray-400 hover:text-[#00ffc8] hover:rotate-90 transition-all"
+              >
+                ×
+              </button>
+            </div>
             
             {/* Post Header */}
             <div className="mb-8">
@@ -641,10 +708,23 @@ export default function CommunityPage() {
             </div>
 
             {/* Post Stats */}
-            <div className="flex gap-4 md:gap-6 text-sm text-gray-400 mb-8 pb-8 border-b border-[#2D3138]">
+            <div className="flex gap-4 md:gap-6 items-center text-sm text-gray-400 mb-8 pb-8 border-b border-[#2D3138]">
               <span>👍 {selectedPost.likes}</span>
               <span>💬 {selectedPost.comments}</span>
               <span>👁️ {selectedPost.views}</span>
+              <button
+                onClick={(e) => toggleBookmark(selectedPost.id, e)}
+                className={`ml-auto px-3 py-1.5 rounded-lg transition-all flex items-center gap-2 ${
+                  bookmarkedPosts.has(selectedPost.id)
+                    ? 'text-yellow-400 bg-yellow-400/10 hover:bg-yellow-400/20'
+                    : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-400/10'
+                }`}
+              >
+                <span>🔖</span>
+                <span className="text-xs">
+                  {bookmarkedPosts.has(selectedPost.id) ? 'Bookmarked' : 'Bookmark'}
+                </span>
+              </button>
             </div>
 
             {/* Comments Section */}
