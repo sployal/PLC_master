@@ -398,14 +398,19 @@ export default function CommunityPage() {
                 setShowBookmarks(!showBookmarks);
                 setSelectedCategory('all');
               }}
-              className={`flex items-center px-4 py-3 transition-colors cursor-pointer gap-3 ${
+              className={`flex items-center justify-between px-4 py-3 transition-colors cursor-pointer gap-3 ${
                 showBookmarks 
                   ? 'text-[#00ffc8] bg-[#2A2D35] border-l-3 border-[#00ffc8]' 
                   : 'text-gray-400 hover:bg-[#252930] hover:text-white'
               }`}
             >
-              <span className="text-xl">🔖</span>
-              <span className="text-sm">Bookmarks</span>
+              <div className="flex items-center gap-3">
+                <span className="text-xl">🔖</span>
+                <span className="text-sm">Bookmarks</span>
+              </div>
+              <span className="bg-[#2D3138] px-2 py-0.5 rounded-full text-xs text-gray-400">
+                {bookmarkedPosts.size}
+              </span>
             </div>
           </nav>
 
