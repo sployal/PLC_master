@@ -830,8 +830,8 @@ export default function CommunityPage() {
 
       {/* Post Detail Modal */}
       {showPostModal && selectedPost && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-4">
-          <div className="bg-[#1C1F26] border border-[#2D3138] rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto p-6 md:p-8 relative custom-scrollbar">
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-0 md:p-4">
+          <div className="bg-[#1C1F26] border-0 md:border border-[#2D3138] rounded-none md:rounded-2xl w-full h-full md:w-auto md:h-auto md:max-w-4xl md:max-h-[85vh] overflow-y-auto p-4 md:p-6 lg:p-8 relative custom-scrollbar">
             <div className="absolute right-4 top-4 md:right-6 md:top-6 flex items-center gap-3">
               <button
                 onClick={(e) => selectedPost && toggleBookmark(selectedPost.id, e)}
