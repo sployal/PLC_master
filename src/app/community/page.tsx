@@ -138,6 +138,11 @@ export default function CommunityPage() {
   const [newPostContent, setNewPostContent] = useState('');
   const [newPostCategory, setNewPostCategory] = useState<'help' | 'project' | 'discussion' | ''>('');
   const [newPostImage, setNewPostImage] = useState<string>('');
+  const [formErrors, setFormErrors] = useState({
+    title: false,
+    content: false,
+    category: false
+  });
 
   // Helper functions
   const getCategoryIcon = (category: string) => {
@@ -184,7 +189,17 @@ export default function CommunityPage() {
 
   // Handle create post
   const handleCreatePost = () => {
-    if (!newPostTitle || !newPostContent || !newPostCategory) return;
+    const errors = {
+      title: !newPostTitle,
+      content: !newPostContent,
+      category: !newPostCategory
+    };
+    
+    setFormErrors(errors);
+    
+    if (errors.title || errors.content || errors.category) {
+      return;
+    }
 
     const newPost: Post = {
       id: posts.length + 1,
@@ -206,6 +221,7 @@ export default function CommunityPage() {
     setNewPostContent('');
     setNewPostCategory('');
     setNewPostImage('');
+    setFormErrors({ title: false, content: false, category: false });
     alert('🎉 Your post has been published to the community!');
   };
 
@@ -427,8 +443,16 @@ export default function CommunityPage() {
                 onClick={() => openPostModal(post)}
                 className="bg-[#1C1F26] border border-[#2D3138] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-4px] hover:border-[#00ffc8] hover:shadow-lg hover:shadow-[#00ffc8]/15 transition-all flex flex-col"
               >
-                <div className="w-full h-[180px] bg-gradient-to-br from-[#1a1d29] to-[#2d1b4e] flex items-center justify-center text-5xl border-b border-[#2D3138]">
-                  {getCategoryIcon(post.category)}
+                <div className="w-full h-[180px] bg-gradient-to-br from-[#1a1d29] to-[#2d1b4e] flex items-center justify-center text-5xl border-b border-[#2D3138] overflow-hidden">
+                  {post.image ? (
+                    <img 
+                      src={post.image} 
+                      alt={post.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    getCategoryIcon(post.category)
+                  )}
                 </div>
                 <div className="p-4 flex-1 flex flex-col">
                   <div className="flex justify-between items-center mb-3">
@@ -479,16 +503,35 @@ export default function CommunityPage() {
                 type="text"
                 placeholder="What's your question or project about?"
                 value={newPostTitle}
-                onChange={(e) => setNewPostTitle(e.target.value)}
-                className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white mb-4 focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all text-sm md:text-base"
+                onChange={(e) => {
+                  setNewPostTitle(e.target.value);
+                  setFormErrors(prev => ({ ...prev, title: false }));
+                }}
+                className={`w-full px-4 py-3 bg-[#252930] border rounded-lg text-white mb-1 focus:outline-none focus:bg-[#2A2D35] transition-all text-sm md:text-base ${
+                  formErrors.title ? 'border-red-500 focus:border-red-500' : 'border-[#2D3138] focus:border-[#00ffc8]'
+                }`}
               />
+              {formErrors.title && (
+                <p className="text-red-400 text-xs mb-3 px-1">⚠️ Please enter a title</p>
+              )}
+              {!formErrors.title && <div className="mb-3"></div>}
+              
               <textarea
                 placeholder="Describe your issue or share your project details..."
                 value={newPostContent}
-                onChange={(e) => setNewPostContent(e.target.value)}
+                onChange={(e) => {
+                  setNewPostContent(e.target.value);
+                  setFormErrors(prev => ({ ...prev, content: false }));
+                }}
                 rows={6}
-                className="w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white mb-4 focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all resize-none text-sm md:text-base"
+                className={`w-full px-4 py-3 bg-[#252930] border rounded-lg text-white mb-1 focus:outline-none focus:bg-[#2A2D35] transition-all resize-none text-sm md:text-base ${
+                  formErrors.content ? 'border-red-500 focus:border-red-500' : 'border-[#2D3138] focus:border-[#00ffc8]'
+                }`}
               />
+              {formErrors.content && (
+                <p className="text-red-400 text-xs mb-3 px-1">⚠️ Please enter content</p>
+              )}
+              {!formErrors.content && <div className="mb-3"></div>}
               
               {/* Image Upload Section */}
               <div className="mb-4">
@@ -520,16 +563,26 @@ export default function CommunityPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4">
-                <select
-                  value={newPostCategory}
-                  onChange={(e) => setNewPostCategory(e.target.value as any)}
-                  className="px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-white focus:outline-none focus:border-[#00ffc8] focus:bg-[#2A2D35] transition-all text-sm md:text-base"
-                >
-                  <option value="">Select Category</option>
-                  <option value="help">❓ Help Needed</option>
-                  <option value="project">🚀 Project Showcase</option>
-                  <option value="discussion">💭 Discussion</option>
-                </select>
+                <div>
+                  <select
+                    value={newPostCategory}
+                    onChange={(e) => {
+                      setNewPostCategory(e.target.value as any);
+                      setFormErrors(prev => ({ ...prev, category: false }));
+                    }}
+                    className={`w-full px-4 py-3 bg-[#252930] border rounded-lg text-white focus:outline-none focus:bg-[#2A2D35] transition-all text-sm md:text-base ${
+                      formErrors.category ? 'border-red-500 focus:border-red-500' : 'border-[#2D3138] focus:border-[#00ffc8]'
+                    }`}
+                  >
+                    <option value="">Select Category</option>
+                    <option value="help">❓ Help Needed</option>
+                    <option value="project">🚀 Project Showcase</option>
+                    <option value="discussion">💭 Discussion</option>
+                  </select>
+                  {formErrors.category && (
+                    <p className="text-red-400 text-xs mt-1 px-1">⚠️ Select category</p>
+                  )}
+                </div>
                 <button
                   onClick={handleCreatePost}
                   className="px-8 py-3 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-sm md:text-base"
