@@ -159,9 +159,6 @@ export default function PostDetailModal({
                   <span className="text-gray-400 text-sm flex items-center gap-2">
                     💬 {selectedPost.comments}
                   </span>
-                  <span className="text-gray-400 text-sm flex items-center gap-2">
-                    👁️ {selectedPost.views}
-                  </span>
                   <button
                     onClick={(e) => toggleBookmark(selectedPost.id, e)}
                     className={`ml-auto px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${

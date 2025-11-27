@@ -117,7 +117,6 @@ export default function MainContent({ filteredPosts, selectedFilter, setSelected
                 <div className="flex gap-4 text-xs text-gray-400">
                   <span>👍 {post.likes}</span>
                   <span>💬 {post.comments}</span>
-                  <span>👁️ {post.views}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-full flex items-center justify-center text-xs">
