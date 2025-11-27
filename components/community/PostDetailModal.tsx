@@ -70,10 +70,10 @@ export default function PostDetailModal({
     >
       {/* Scrollable wrapper - full viewport height */}
       <div className="w-full h-full overflow-y-auto external-scrollbar">
-        {/* Modal Container - centered content, full height */}
-        <div className="max-w-4xl mx-auto h-full flex items-stretch px-4">
+        {/* Modal Container - full screen on mobile, centered on desktop */}
+        <div className="max-w-4xl mx-auto h-full flex items-stretch md:px-4">
           <div 
-            className="w-full bg-[#1C1F26] shadow-2xl my-0 flex flex-col"
+            className="w-full bg-[#1C1F26] shadow-2xl my-0 md:rounded-xl flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Section */}
@@ -206,27 +206,41 @@ export default function PostDetailModal({
       </div>
 
       <style>{`
-        .external-scrollbar::-webkit-scrollbar {
-          width: 14px;
+        /* Hide scrollbar on mobile */
+        @media (max-width: 767px) {
+          .external-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+          .external-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
         }
         
-        .external-scrollbar::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.3);
-        }
-        
-        .external-scrollbar::-webkit-scrollbar-thumb {
-          background: #4a5568;
-          border-radius: 7px;
-          border: 3px solid rgba(0, 0, 0, 0.3);
-        }
-        
-        .external-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #5a6678;
-        }
+        /* Show scrollbar on desktop */
+        @media (min-width: 768px) {
+          .external-scrollbar::-webkit-scrollbar {
+            width: 14px;
+          }
+          
+          .external-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+          }
+          
+          .external-scrollbar::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 7px;
+            border: 3px solid rgba(0, 0, 0, 0.3);
+          }
+          
+          .external-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #5a6678;
+          }
 
-        .external-scrollbar {
-          scrollbar-width: thin;
-          scrollbar-color: #4a5568 rgba(0, 0, 0, 0.3);
+          .external-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #4a5568 rgba(0, 0, 0, 0.3);
+          }
         }
       `}</style>
     </div>
