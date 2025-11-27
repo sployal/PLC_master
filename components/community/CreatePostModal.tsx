@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import React from 'react';
 
@@ -68,8 +68,29 @@ export default function CreatePostModal({
           {formErrors.content && <p className="text-red-400 text-xs mb-3 px-1">⚠️ Please enter content</p>}
           {!formErrors.content && <div className="mb-3" />}
 
-          <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4">
-            <div>
+          {/* Image upload */}
+          <div className="mb-4">
+            <label className="block text-sm text-gray-400 mb-2">📷 Add Image (Optional)</label>
+            <input id="create-image-upload" type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+            <label htmlFor="create-image-upload" className="block w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-gray-400 cursor-pointer hover:border-[#00ffc8] transition-all text-sm md:text-base text-center">
+              {newPostImage ? '✅ Image Selected - Click to Change' : '📤 Click to Upload Image'}
+            </label>
+            {newPostImage && (
+              <div className="mt-4 relative">
+                <img src={newPostImage} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                <button
+                  onClick={() => setNewPostImage('')}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-all"
+                  title="Remove image"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div className="w-full md:w-64">
               <select
                 value={newPostCategory}
                 onChange={(e) => setNewPostCategory(e.target.value as any)}
@@ -83,45 +104,21 @@ export default function CreatePostModal({
                 <option value="discussion">💭 Discussion</option>
               </select>
               {formErrors.category && <p className="text-red-400 text-xs mt-1 px-1">⚠️ Select category</p>}
-
-              {/* Image upload */}
-              <div className="mt-4">
-                <label className="block text-sm text-gray-400 mb-2">📷 Add Image (Optional)</label>
-                <input id="create-image-upload" type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                <label htmlFor="create-image-upload" className="block w-full px-4 py-3 bg-[#252930] border border-[#2D3138] rounded-lg text-gray-400 cursor-pointer hover:border-[#00ffc8] transition-all text-sm md:text-base text-center">
-                  {newPostImage ? '✅ Image Selected - Click to Change' : '📤 Click to Upload Image'}
-                </label>
-                {newPostImage && (
-                  <div className="mt-4 relative">
-                    <img src={newPostImage} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
-                    <button
-                      onClick={() => setNewPostImage('')}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-all"
-                      title="Remove image"
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
 
-            <div className="flex flex-col justify-between">
-              <div />
-              <div className="mt-auto flex justify-end">
-                <button
-                  onClick={() => setShowCreateModal(false)}
-                  className="px-6 py-2 mr-2 bg-transparent border border-[#2D3138] rounded-lg text-gray-300 hover:text-white transition-all text-sm md:text-base"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCreatePost}
-                  className="px-6 py-2 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-sm md:text-base"
-                >
-                  Post to Community
-                </button>
-              </div>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="px-6 py-2 bg-transparent border border-[#2D3138] rounded-lg text-gray-300 hover:text-white transition-all text-sm md:text-base"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreatePost}
+                className="px-6 py-2 bg-gradient-to-r from-[#00ffc8] to-[#00a8ff] rounded-lg text-[#0E1217] font-semibold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-[#00ffc8]/40 transition-all text-sm md:text-base"
+              >
+                Post to Community
+              </button>
             </div>
           </div>
         </div>
