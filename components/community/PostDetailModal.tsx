@@ -181,7 +181,7 @@ export default function PostDetailModal({
               </div>
 
               {/* Comments List */}
-              <div className="space-y-4 pb-6">
+              <div className="space-y-4 pb-24 md:pb-6">
                 {(comments[selectedPost.id] || []).map((comment, index) => (
                   <div 
                     key={index} 
