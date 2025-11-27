@@ -40,6 +40,35 @@ const getCategoryStyles = (category: string) => {
   return styles[category] || 'bg-gray-500/20 text-gray-400';
 };
 
+// Function to detect and linkify URLs in text
+const renderContentWithLinks = (text: string) => {
+  // Regex to detect URLs (http, https, and www)
+  const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g;
+  
+  const parts = text.split(urlRegex).filter(Boolean);
+  
+  return parts.map((part, index) => {
+    // Check if this part is a URL
+    if (part && part.match(urlRegex)) {
+      // Add https:// prefix if it's a www link without protocol
+      const href = part.startsWith('www.') ? `https://${part}` : part;
+      
+      return (
+        <a
+          key={index}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:text-blue-300 underline hover:no-underline transition-colors"
+        >
+          {part}
+        </a>
+      );
+    }
+    return <React.Fragment key={index}>{part}</React.Fragment>;
+  });
+};
+
 interface Props {
   selectedPost: Post | null;
   closePostModal: () => void;
@@ -147,9 +176,9 @@ export default function PostDetailModal({
                   </div>
                 )}
 
-                <p className="text-white/90 leading-relaxed text-base md:text-lg whitespace-pre-wrap">
-                  {selectedPost.content}
-                </p>
+                <div className="text-white/90 leading-relaxed text-base md:text-lg whitespace-pre-wrap">
+                  {renderContentWithLinks(selectedPost.content)}
+                </div>
 
                 {/* Post Stats */}
                 <div className="flex items-center gap-6 mt-6 pt-6 border-t border-[#2D3138] bg-[#1C1F26]">
@@ -210,7 +239,9 @@ export default function PostDetailModal({
                         </div>
                         <span className="text-gray-400 text-xs">{comment.time}</span>
                       </div>
-                      <p className="text-white/80 leading-relaxed ml-10">{comment.text}</p>
+                      <div className="text-white/80 leading-relaxed ml-10">
+                        {renderContentWithLinks(comment.text)}
+                      </div>
                     </div>
                   ))}
                 </div>
